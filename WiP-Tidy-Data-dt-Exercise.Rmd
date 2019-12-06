@@ -177,6 +177,27 @@ WP[Country %in% c("France", "Portugal", "United Kingdom","Norway","Denmark","Pol
 
 ```
 
+```{r Merging continent}
+
+library(countrycode)
+
+cl <- as.data.table(codelist)[, .(continent, wb)]
+setnames(cl, c("continent","wb"),
+         c("Continent","Code"))
+cWP <- cl[WP, on="Code"]
+
+```
+
+```{r Highest percentage by year and continent}
+
+cWP [Year %in% c(1990, 2018) & !is.na(Continent)][
+      order(Year, -pctWiP), head(.SD, 1),
+      by = .(Year, Continent)][
+      order(Continent, Year),
+      .(Continent, Year, Country, pctWiP)]
+
+```
+
 
 
 ```{r imageEnd, echo=FALSE, out.width="60%"}
