@@ -3,6 +3,9 @@ title: "Women in Parliament - Tidy Data"
 author: "Carolina Silva"
 date: "`r format(Sys.time(), '%a %d %b %Y (%H:%M:%S)')`"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
   html_document:
     highlight: tango
     theme: united
@@ -11,9 +14,6 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: no
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
 ---
 
 
@@ -146,6 +146,23 @@ setcolorder(WP, c("Country","Code","Year",
 
 WP
 ```
+
+```{r Time trens for France}
+
+WP[Country %in% "France"]
+
+library(ggplot2)
+library(magrittr)
+
+WP[Country %in% "France"] %>%
+ggplot(aes(Year, pctWiP)) +
+  geom_line() + geom_point() +
+  scale_y_continuous(limits = c(0, 50)) +
+  ylab("% Women in Parliament")
+
+```
+
+
 
 
 ```{r imageEnd, echo=FALSE, out.width="60%"}
