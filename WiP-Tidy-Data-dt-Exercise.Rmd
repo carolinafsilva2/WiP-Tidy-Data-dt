@@ -1,6 +1,6 @@
 ---
 title: "Women in Parliament - Tidy Data"
-author: "Your Name Here"
+author: "Carolina Silva"
 date: "`r format(Sys.time(), '%a %d %b %Y (%H:%M:%S)')`"
 output:
   html_document:
@@ -111,12 +111,41 @@ wip <- fread(here("data", "WB-WiP.csv"),
              check.names = TRUE)
 ```
 
-# Continue from here...
+```{r RemovingColumns}
+wip[, .N, by=.(V65)] #verifies that all values are NA
+
+wip[, c("Indicator.Name", "Indicator.Code",
+        "V65"):=NULL]
+
+setnames(wip, c("Country.Name", "Country.Code"),
+              c("Country","Code"))
+
+head(names(wip))
+tail(names(wip))
+```
+
+```{r Putting the Year variable into a column}
+WP <- melt(wip,
+           id.vars = c("Country", "Code"),
+           measure = patterns("^X"),
+           variable.name = "YearC",
+           value.name = c("pctWiP"),
+           na.rm = TRUE)
+WP
+```
 
 
+```{r Making Year a numeric variable}
 
+WP[, ':='(Year=as.numeric(gsub("[^[:digit:].]",
+                               "", YearC)),
+          Ratio = (100-pctWiP)/pctWiP)][
+            , YearC:=NULL]
+setcolorder(WP, c("Country","Code","Year",
+                  "pctWiP","Ratio"))
 
-
+WP
+```
 
 
 ```{r imageEnd, echo=FALSE, out.width="60%"}
